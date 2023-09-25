@@ -1,0 +1,53 @@
+.table-reserve-grid{
+    display:grid;
+    grid-template-columns: repeat(3,1fr);
+    grid-template-rows: repeat(7,9vh);
+    grid-gap: 0.5rem;
+}
+.table-reserve-s{
+    grid-column: span 1;
+    grid-row: span 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.table-reserve-m{
+    grid-column: span 1;
+    grid-row: span 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.table-reserve-l{
+    grid-column: span 1;
+    grid-row: span 2;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.table-reserve-space{
+    grid-column: span 3;
+    grid-row: span 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    /* background-color: aquamarine; */
+}
+.table-reserve-row{
+    display: inline-flex;
+    justify-content: center;
+    align-content: center;
+    width: 100%;
+    height: 100%;
+}
+.table-reserve-left{
+    width: 20vw;
+    /* background-color: aquamarine; */
+}
+.table-reserve-right{
+    width: 35vw;
+    height: auto;
+    margin-bottom: 3rem;
+    /* background-color: bisque; */
+}
