@@ -9,12 +9,13 @@ class Booking(models.Model):
     booking_date = models.DateField()
     no_of_guests = models.SmallIntegerField(default=1)
     time = models.SmallIntegerField(default=17)
+    table = models.CharField(max_length=5)
 
     def __str__(self):
-        return f"{self.user} {self.booking_date} {self.no_of_guests} {self.time}"
+        return f"{self.user} {self.booking_date} {self.no_of_guests} {self.time} {self.table}"
 
     class Meta:
-        unique_together = ("booking_date", "time")
+        unique_together = ("booking_date", "time","table")
 
 
 class Category(models.Model):

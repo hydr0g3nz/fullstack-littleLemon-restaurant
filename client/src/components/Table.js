@@ -22,6 +22,7 @@ const Table = ({
   }, [tableSelected]);
   useEffect(() => {
     if (tableList.includes(id)) setColor(inActiveCol);
+    else setColor(normalCol)
   }, [tableList]);
   return (
     <div

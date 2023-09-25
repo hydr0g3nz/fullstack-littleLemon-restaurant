@@ -62,6 +62,20 @@ class BookingViewSet(viewsets.ViewSet):
             bookings = bookings.filter(booking_date=date)
         serializer = BookingSerializer(bookings, many=True)
         return Response(serializer.data)
+    
+    @action(detail=False, methods=["get"])
+    def tables(self, request):
+
+        time = request.query_params.get("time")
+        date = request.query_params.get("date")
+        # bookings = Booking.objects.filter(user=request.user)
+        if time and date:
+            bookings = Booking.objects.filter(time=time,booking_date=date)
+        else:
+            return Response({"message":"You must specific 'time' variable"},status=status.HTTP_400_BAD_REQUEST)
+        serializer = BookingSerializer(bookings, many=True)
+        return Response(serializer.data)
+
 
 
 class MenuViewSet(viewsets.ViewSet):

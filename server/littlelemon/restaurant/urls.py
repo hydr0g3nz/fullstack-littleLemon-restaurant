@@ -5,7 +5,7 @@ from rest_framework.routers import DefaultRouter
 from restaurant.views import BookingViewSet,CategoryViewSet,MenuViewSet,UserViewSet
 
 router1 = DefaultRouter()
-router1.register(r"tables", BookingViewSet, basename="tables")
+router1.register(r"", BookingViewSet, basename="")
 
 router2 = DefaultRouter()
 router2.register(r'menu',MenuViewSet,basename='menus')

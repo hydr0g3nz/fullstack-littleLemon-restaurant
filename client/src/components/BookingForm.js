@@ -5,22 +5,76 @@ import TablePlan from "../components/TablePlan";
 
 function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
   const [date, setDate] = useState("");
-  const [time, setTime] = useState("");
+  const [time, setTime] = useState("17");
   const [guest, setGuest] = useState("1");
   const [occasion, setOccation] = useState("");
   const [tableSelected, setTableSelected] = useState("");
   const [tableReserved, setTableReserved] = useState([]);
   const { user } = useContext(AuthContext);
+  const [tableSlot, setTableSlot] = useState({
+    17: null,
+    18: null,
+    19: null,
+    20: null,
+    21: null,
+  });
+  useEffect(() => {
+    for (let i = 17; i <= 21; i++) {
+      setTableSlot((prevTableSlot) => {
+        let len = availableTimes.filter((item) => item.time === i);
+    
+        let data = { ...prevTableSlot };
+        data[i] = len.length;
+    
+        console.log("update Times slot", data);
+        
+        return data;
+      });
+    }
+    // let i=17
+    // console.log(i,availableTimes.filter((item)=>item.time===i))
+    // console.log(availableTimes)
+  }, [availableTimes]);
   const clearForm = () => {
     setTime("");
+    setTableSelected("");
     setGuest("1");
     setOccation("");
+
     console.log("timelist after clear", availableTimes);
   };
   const getIsFormValid = () => {
-    return user && date && time !== "" && guest > 0 && occasion !== "" && tableSelected!=='';
+    return (
+      user &&
+      date &&
+      time !== "" &&
+      guest > 0 &&
+      occasion !== "" &&
+      tableSelected !== ""
+    );
   };
+  const updateTables = async (Time) => {
+    await fetch(
+      `http://127.0.0.1:8000/api/booking/tables/?date=${date}&time=${Time[0]}${Time[1]}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: "Bearer " + String(authToken.access),
+        },
+      }
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        let tables = data.map((table) => table.table);
+        console.log("tables", Time, tables, "L=", tables.length);
 
+        setTableReserved(tables);
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+      });
+  };
   useEffect(() => {
     // const newTime = availableTimes.filter((time) => {
     //   return Math.random() > 0.5;
@@ -43,15 +97,17 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await submitForm({ date, time, guest, occasion });
+    await submitForm({ date, time, guest, occasion, tableSelected });
     await clearForm();
     await updateTimes(date);
+    await setTableReserved([]);
   };
   const timesList = [];
 
   for (let i = 17; i <= 21; i++) timesList.push(i);
   return (
     <div className="table-reserve-row">
+      {/* {JSON.stringify(tableSlot)} */}
       {/* <h1>ReserveTable page</h1>
       <p>date : {date}</p>
       <p>time : {time}</p>
@@ -74,6 +130,7 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
             onChange={(e) => {
               setDate(e.target.value);
               updateTimes(e.target.value);
+              setTableReserved([]);
             }}
           />
           <label className="form-label" htmlFor="res-time">
@@ -85,18 +142,21 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
             value={time}
             onChange={(e) => {
               setTime(e.target.value);
+              updateTables(e.target.value);
             }}
           >
-            <option value="">Select time</option>
+            <option>Select Time</option>
             {date
               ? timesList.map((time) => {
-                  if (availableTimes.includes(time))
+                  if (
+                    tableSlot[time]===16
+                  )
                     return (
                       <option disabled>
-                        {time}:00 <span>Reserved</span>
+                        {time}:00 <span style={{color:"red"}}>FULL</span>
                       </option>
                     );
-                  else return <option>{time}:00</option>;
+                  else return <option>{time}:00 <span style={{color:"red"}} >Free</span> {16-tableSlot[time]}</option>;
                 })
               : null}
           </select>
@@ -131,27 +191,29 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
             <option>Birthday</option>
             <option>Anniversary</option>
           </select>
-          
+
           <input
             className="btn"
             type="submit"
             value="Make Your reservation"
             disabled={!getIsFormValid()}
           />
-          
+
           {user == null && (
             <p style={{ color: "red" }}>You must Login for reservation</p>
           )}
         </form>
       </div>
       <div className="table-reserve-right">
-      <label>Select  Table : <strong>{tableSelected}</strong></label>
+        <label>
+          Select Table : <strong>{tableSelected}</strong>
+        </label>
         <div className="table-reserve-grid">
           <TablePlan
             normalCol={"black"}
             hoverCol={"#f4ce14"}
             inActiveCol={"darkgrey"}
-            tableList={["S1", "S2", "M1", "L1"]}
+            tableList={tableReserved}
             tableSelected={tableSelected}
             setTableSelected={setTableSelected}
           ></TablePlan>

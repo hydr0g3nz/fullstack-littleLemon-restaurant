@@ -12,7 +12,7 @@ class BookingSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Booking
-        fields = ["user", "booking_date", "no_of_guests", "time"]
+        fields = ["user", "booking_date", "no_of_guests", "time","table"]
 
 
 class MenuSerializer(serializers.ModelSerializer):

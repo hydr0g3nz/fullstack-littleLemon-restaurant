@@ -4,12 +4,13 @@ import ConfirmedBooking from "../components/ConfirmedBooking";
 import BookingForm from "../components/BookingForm";
 import AuthContext from "../context/AuthContext";
 import "./reserveTable.css";
+import Table from "../components/Table";
 function ReserveTable({ className, children }) {
   const [isConfirmSubmit, setConfirmSubmit] = useState(false);
   const [availableTimes, setTimes] = useState([]);
   const { authToken } = useContext(AuthContext);
   const submitForm = async (data) => {
-    let response = await fetch("http://127.0.0.1:8000/api/booking/tables/", {
+    let response = await fetch("http://127.0.0.1:8000/api/booking/", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -19,6 +20,7 @@ function ReserveTable({ className, children }) {
         booking_date: data.date,
         no_of_guests: Number(data.guest),
         time: Number(data.time.substring(0, 2)),
+        table:data.tableSelected,
       }),
     });
     console.log(response);
@@ -27,7 +29,7 @@ function ReserveTable({ className, children }) {
     setConfirmSubmit(false);
   };
   const updateTimes = (date) => {
-    fetch(`http://127.0.0.1:8000/api/booking/tables/?date=${date}`, {
+    fetch(`http://127.0.0.1:8000/api/booking/?date=${date}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -36,7 +38,7 @@ function ReserveTable({ className, children }) {
     })
       .then((response) => response.json())
       .then((data) => {
-        let times = data.map((time) => time.time);
+        let times = data.map((time) =>{return {"time":time.time ,"table":time.table} });
         console.log("f", times);
         setTimes(times);
       })
