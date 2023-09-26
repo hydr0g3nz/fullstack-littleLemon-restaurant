@@ -22,12 +22,12 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
     for (let i = 17; i <= 21; i++) {
       setTableSlot((prevTableSlot) => {
         let len = availableTimes.filter((item) => item.time === i);
-    
+
         let data = { ...prevTableSlot };
         data[i] = len.length;
-    
+
         console.log("update Times slot", data);
-        
+
         return data;
       });
     }
@@ -148,15 +148,19 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
             <option>Select Time</option>
             {date
               ? timesList.map((time) => {
-                  if (
-                    tableSlot[time]===16
-                  )
+                  if (tableSlot[time] === 16)
                     return (
                       <option disabled>
-                        {time}:00 <span style={{color:"red"}}>FULL</span>
+                        {time}:00 <span style={{ color: "red" }}>FULL</span>
                       </option>
                     );
-                  else return <option>{time}:00 <span style={{color:"red"}} >Free</span> {16-tableSlot[time]}</option>;
+                  else
+                    return (
+                      <option>
+                        {time}:00 <span style={{ color: "red" }}>Free</span>{" "}
+                        {16 - tableSlot[time]}
+                      </option>
+                    );
                 })
               : null}
           </select>
@@ -192,12 +196,13 @@ function BookingForm({ className, availableTimes, submitForm, updateTimes }) {
             <option>Anniversary</option>
           </select>
 
-          <input
-            className="btn"
+          <button
             type="submit"
-            value="Make Your reservation"
+            className="flex w-full justify-center rounded-lg bg-ltlm-yellow text-lg  px-3 py-3 text-sm font-semibold leading-6 text-black shadow-sm hover:bg-ltlm-darkgreen focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ltlm-darkgreen focus-visible:text-white hover:text-white disabled:opacity-50 disabled:pointer-events-none"
             disabled={!getIsFormValid()}
-          />
+          >
+            Make Your reservation
+          </button>
 
           {user == null && (
             <p style={{ color: "red" }}>You must Login for reservation</p>
